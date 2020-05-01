@@ -1,0 +1,8 @@
+.vscode/
+.VSCODE/
+.VSCodeCounter/
+elm-stuff/
+node_modules/
+TODO.md
+package.json
+package-lock.json

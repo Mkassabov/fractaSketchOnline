@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FractaSketch Online</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#28a745" />
+    <meta name="msapplication-TileColor" content="#28a745" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Tool for generating fractals based on a template. Updated version of FractaSketch."
+    />
+    <style>
+      body {
+        overflow-y: hidden !important;
+      }
+
+      #points circle:hover {
+        cursor: initial;
+      }
+
+      circle:hover {
+        cursor: pointer;
+      }
+      g g:hover circle:first-child {
+        opacity: 0.5;
+      }
+
+      g g g:first-child line:hover {
+        cursor: pointer;
+      }
+
+      #extraline:hover {
+        cursor: initial;
+      }
+
+      .color-picker-container {
+        border: 3px solid rgba(40, 167, 69, 1);
+        border-radius: 0 !important;
+        box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.5) !important;
+        transform: translate(calc(50% - 1rem), 0.5rem);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+
+    <script src="main.js"></script>
+    <script>
+      let node = document.getElementById('app')
+      let app = Elm.Main.init({
+        node: node,
+        flags: { x: window.innerWidth, y: window.innerHeight },
+      })
+
+      app.ports.downloadSVG.subscribe(message => {
+        svgEl = document.getElementById('svg').cloneNode(true)
+        if (svgEl.getElementById('points')) {
+          svgEl.getElementById('points').remove()
+        }
+        console.log(svgEl)
+        svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+        let svgData = svgEl.outerHTML
+        let preface = '<?xml version="1.0" standalone="no"?>\r\n'
+        let svgBlob = new Blob([preface, svgData], {
+          type: 'image/svg+xml;charset=utf-8',
+        })
+        let svgUrl = URL.createObjectURL(svgBlob)
+        let downloadLink = document.createElement('a')
+        downloadLink.href = svgUrl
+        downloadLink.download = 'fractal.svg'
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+        document.body.removeChild(downloadLink)
+      })
+    </script>
+  </body>
+</html>
